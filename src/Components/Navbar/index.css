@@ -1,0 +1,11 @@
+body {
+  padding-top: 70px;
+}
+
+.nav-item .active {
+  color: orangered !important;
+}
+
+.nav-item {
+  font-weight: bold;
+}
