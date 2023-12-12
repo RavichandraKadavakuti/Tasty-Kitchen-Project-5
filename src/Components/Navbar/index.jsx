@@ -36,7 +36,7 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <NavLink exact to="/cart" className="nav-link">
-                Cart
+                {`Cart`}
               </NavLink>
             </li>
             <li className="nav-item nav-link">

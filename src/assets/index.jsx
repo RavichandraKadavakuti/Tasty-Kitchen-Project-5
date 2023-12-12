@@ -60,18 +60,18 @@ export const GetApiCall = async (path) => {
 };
 
 export const FailureViewData = (msg) => (
-  <div className="text-center">
+  <div className="text-center my-5">
     <img
       src="https://res.cloudinary.com/dnmaskg3n/image/upload/v1674886994/Group_7737_ipxqpg.png"
       alt="failure"
-      className="img-fluid"
+      className="img-fluid mb-3"
     />
     <h5>{msg}</h5>
   </div>
 );
 
 export const LoadingViewData = () => (
-  <div className="d-flex justify-content-center">
+  <div className="d-flex justify-content-center my-5">
     <TailSpin color="blue" height={50} width={50} />
   </div>
 );
