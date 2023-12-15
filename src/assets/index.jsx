@@ -19,7 +19,7 @@ export const initialFilterValue = [
   },
 ];
 
-export const token = Cookies.get("jwt_token");
+export let token = Cookies.get("jwt_token");
 
 export const LoginApiCall = async (path, username, password) => {
   try {
@@ -41,6 +41,7 @@ export const LoginApiCall = async (path, username, password) => {
 
 export const GetApiCall = async (path) => {
   try {
+    const token = Cookies.get("jwt_token");
     const url = `https://apis.ccbp.in/${path}`;
     const options = {
       method: "GET",

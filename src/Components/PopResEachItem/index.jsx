@@ -8,56 +8,34 @@ import {
   initialFetchState,
 } from "../../assets";
 import PopResFoodItems from "../PopResFoodItems";
+import { getFoodItemsFromApi } from "../ReduxStore/foodItemsSlice";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import "./index.css";
 
-const PopResEachItem = (props) => {
-  const [apiData, setApiData] = useState([]);
-  const [foodItems, setFoodItems] = useState([]);
-  const [fetchState, setFetchState] = useState(initialFetchState.INITIAL);
+const PopResEachItem = () => {
   const [errorMsg, setErrorMsg] = useState();
+  const dispatch = useDispatch();
+  const data = useSelector((store) => store.foodItems);
+  const { apiapiResponse, fetchState } = data;
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchApi = async () => {
       try {
-        setFetchState(initialFetchState.INPROGRESS);
-        const { match } = props;
-        const { params } = match;
-        const { id } = params;
         const path = `restaurants-list/${id}`;
-        const apiResponse = await GetApiCall(path);
-        const data = apiResponse;
-        const modifyData1 = {
-          imageUrl: data.image_url,
-          costForTwo: data.cost_for_two,
-          cuisine: data.cuisine,
-          id: data.id,
-          location: data.location,
-          name: data.name,
-          rating: data.rating,
-          reviewsCount: data.reviews_count,
-        };
-
-        const modifyData2 = data.food_items.map((each) => ({
-          id: each.id,
-          imageUrl: each.image_url,
-          name: each.name,
-          rating: each.rating,
-          foodType: each.food_type,
-          cost: each.cost,
-          addCart: false,
-          cartCount: 1,
-        }));
-
-        setApiData(modifyData1);
-        setFoodItems(modifyData2);
-        setFetchState(initialFetchState.SUCCESS);
+        dispatch(getFoodItemsFromApi(path));
       } catch (error) {
-        setFetchState(initialFetchState.FAILURE);
         setErrorMsg(error.message);
       }
     };
     fetchApi();
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const RenderEachPopRes = () => {
     switch (fetchState) {
       case initialFetchState.SUCCESS:
@@ -67,7 +45,7 @@ const PopResEachItem = (props) => {
       case initialFetchState.INPROGRESS:
         return loadingView();
       default:
-        break;
+        return null;
     }
   };
 
@@ -84,30 +62,30 @@ const PopResEachItem = (props) => {
   const successView = () => (
     <div className="my-3 my-lg-5">
       <div className="d-flex align-items-lg-center bg-dark rounded p-3">
-        <div className="col-5">
+        <div>
           <img
-            src={apiData.imageUrl}
-            alt={apiData.id}
-            className="img-fluid rounded"
+            src={apiapiResponse.imageUrl}
+            alt={apiapiResponse.id}
+            className="res-food-banner rounded"
           />
         </div>
         <div className="text-light ms-2 ms-lg-5">
-          <h6>{apiData.name}</h6>
-          <h6>{apiData.cuisine}</h6>
-          <p>{apiData.location}</p>
+          <h6>{apiapiResponse.name}</h6>
+          <h6>{apiapiResponse.cuisine}</h6>
+          <p>{apiapiResponse.location}</p>
           <div className="d-flex">
             <div className="border-end border-light pe-2">
               <span>
                 <i className="fa-solid fa-star me-1"></i>
-                {apiData.rating}
+                {apiapiResponse.rating}
               </span>
               <br />
-              <span>{apiData.reviewsCount}+ Ratings</span>
+              <span>{apiapiResponse.reviewsCount}+ Ratings</span>
             </div>
             <div className="ps-2">
               <span>
                 <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                {apiData.costForTwo}
+                {apiapiResponse.costForTwo}
               </span>
               <br />
               <span>cost for two</span>
@@ -116,7 +94,7 @@ const PopResEachItem = (props) => {
         </div>
       </div>
       <ul className="d-flex flex-wrap justify-content-center">
-        {foodItems.map((each) => (
+        {apiapiResponse.foodItems.map((each) => (
           <PopResFoodItems
             key={each.id}
             each={each}
@@ -140,7 +118,7 @@ const PopResEachItem = (props) => {
       <div className="row">
         <div className="container-height">
           <Navbar />
-          {RenderEachPopRes()}
+          <div className="pt-5">{RenderEachPopRes()}</div>
           <div className="my-5">
             <Footer />
           </div>

@@ -1,12 +1,11 @@
 import React from "react";
 import "./index.css";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-
+import { Link } from "react-router-dom";
 const PopResItems = ({ each }) => {
   return (
     <li className="col-12 col-lg-5 col-xl-3 m-2 border border-dark rounded p-2">
       <Link to={`/restaurants-list/${each.id}`} className="d-flex">
-        <div className="d-flex col-5">
+        <div className="d-flex">
           <img
             src={each.imageUrl}
             alt={each.id}

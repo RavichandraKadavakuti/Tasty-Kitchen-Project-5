@@ -1,52 +1,85 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import CartItems from "../CartItems";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-
+import { useSelector } from "react-redux";
+import PaymentSuccess from "../PaymentSuccess";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 const Cart = () => {
-  // const store = useSelector((state) => state.cartItems);
-  // const eachCost = store.map((each) => {
-  //   return each.cost;
-  // });
-  // const totalCost = eachCost.reduce((result, current) => result + current);
-  // console.log(totalCost);
+  const cartList = useSelector((store) => store.cart.items);
+  const total = cartList.reduce((result, current) => {
+    return result + current.cost * current.quantity;
+  }, 0);
+
+  const [placeOrder, setPlaceOrder] = useState(false);
+
+  const onPlaceOrder = () => {
+    setPlaceOrder(true);
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="container">
       <div className="row">
         <Navbar />
-        <div className="mt-5">
-          <div className="text-center">
-            <img
-              src="https://res.cloudinary.com/dnmaskg3n/image/upload/v1677469882/cooking_1_sqbmzf.png"
-              alt="empty cart"
-              className="img-fluid mb-5"
-            />
-            <h5>No Orders Yet!</h5>
-            <p>Your cart is empty. Add something from the menu.</p>
-            <Link to="/">
-              <button type="button" className="btn btn-warning">
-                Order Now
-              </button>
-            </Link>
-          </div>
+        <div className="pt-5"> 
+          {!placeOrder && (
+            <div className="mt-5">
+              {cartList.length === 0 && (
+                <div className="text-center">
+                  <img
+                    src="https://res.cloudinary.com/dnmaskg3n/image/upload/v1677469882/cooking_1_sqbmzf.png"
+                    alt="empty cart"
+                    className="img-fluid mb-5"
+                  />
+                  <h5>No Orders Yet!</h5>
+                  <p>Your cart is empty. Add something from the menu.</p>
+                  <Link to="/">
+                    <button type="button" className="btn btn-warning">
+                      Order Now
+                    </button>
+                  </Link>
+                </div>
+              )}
 
-          <hr />
-          {/* <div className="d-flex justify-content-between">
-            <h5>Order Total : </h5>
-            <div>
-              <h6>
-                <i className="fa-solid fa-indian-rupee-sign me-1"></i>
-                {totalCost}
-              </h6>
-              <button type="button" className="btn btn-warning">
-                Place Order
-              </button>
+              {cartList.length > 0 && (
+                <ul>
+                  {cartList.map((each) => (
+                    <CartItems key={each.id} each={each} />
+                  ))}
+                </ul>
+              )}
+
+              <hr />
+              {total > 0 && (
+                <div className="d-flex justify-content-between">
+                  <h5>Order Total : </h5>
+                  <div>
+                    <h6>
+                      <i className="fa-solid fa-indian-rupee-sign me-1"></i>
+                      {total}
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn btn-warning"
+                      onClick={onPlaceOrder}
+                    >
+                      Place Order
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div> */}
-        </div>
-        <div className="my-5">
-          <Footer />
+          )}
+
+          {placeOrder && <PaymentSuccess />}
+          <div className="my-5">
+            <Footer />
+          </div>
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ const PopularRes = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchApi = async () => {
       try {
         setFetchState(initialFetchState.INPROGRESS);

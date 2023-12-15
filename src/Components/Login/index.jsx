@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import { LoginApiCall, initialFetchState, token } from "../../assets";
 import { TailSpin } from "react-loader-spinner";
 import Cookies from "js-cookie";
-import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
   const [userName, setUserName] = useState("");
@@ -11,6 +11,16 @@ const Login = (props) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [check, setCheck] = useState(false);
   const [fetchState, setFetchState] = useState(initialFetchState.INITIAL);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = Cookies.get("jwt_token");
+
+    if (token !== undefined) {
+      return navigate("/");
+    }
+  }, [navigate]);
 
   const submitLogin = async (e) => {
     e.preventDefault();
@@ -22,8 +32,7 @@ const Login = (props) => {
         userPassword
       );
       Cookies.set("jwt_token", apiResponse.jwt_token, { expires: 30 });
-      const { history } = props;
-      history.replace("/");
+      navigate("/");
     } catch (error) {
       setFetchState(initialFetchState.FAILURE);
       setErrorMsg(error.message);
@@ -42,14 +51,10 @@ const Login = (props) => {
     setCheck(e.target.checked);
   };
 
-  if (token !== undefined) {
-    return <Redirect to="/" />;
-  }
-
   return (
     <div className="container">
       <div className="row">
-        <div className="d-flex flex-column flex-lg-row justify-content-center justify-content-around align-items-center container-height bg-success-subtle">
+        <div className="d-flex flex-column flex-lg-row justify-content-center justify-content-around align-items-center container-height">
           <div className="col-12 col-lg-5">
             <div className="text-center mb-5">
               <img

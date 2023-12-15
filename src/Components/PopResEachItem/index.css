@@ -1,0 +1,11 @@
+.res-food-banner {
+  width: 100px;
+  height: 100px;
+}
+
+@media screen and (min-width: 576px) {
+  .res-food-banner {
+    width: 200px;
+    height: 200px;
+  }
+}
